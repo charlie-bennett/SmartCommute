@@ -1,3 +1,7 @@
+#define FIFO_SIZE 8
+
+
+
 struct FIFOnode
 {
   double val; 
