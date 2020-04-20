@@ -27,3 +27,23 @@ double ADC_poll(unit8_t channel, char iters)
   */
 }
 
+void push_back_FIFO(double val, double* buffer, char BUFFER_SIZE, char& current_loc)
+{
+  buffer[(current_loc%BUFFER_SIZE)] = val; 
+  current_loc++; 
+  return; 
+}
+
+double get_moving_average(double* buffer, char BUFFER_SIZE)
+{
+  double runsum; 
+  for (int i = 0; i<BUFFER_SIZE: i++)
+  {
+    runsum+=buffer[i]; 
+  }
+  return runsum/(double BUFFER_SIZE); 
+}
+
+
+
+
