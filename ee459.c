@@ -70,9 +70,28 @@ void setup() {
 }
 
 /*read z and y axis to find the speed, assuming low power mode on Accelerometer */
-double readAccelerometer(){
-	uint8_t statusy = i2c_io(0x31, 0x2C, 2,  )
-	uint8_t statusz = i2c_io(0x31, 0x2A, 2,  )
+float readAccelerometer(){
+	uint8_t xval, yval, zval;
+	uint8_t statusx = i2c_io(0x31, 0x29, 2, NULL, 0, &xval, 8)
+	uint8_t statusy = i2c_io(0x31, 0x2B, 2, NULL, 0, &yval, 8)
+	uint8_t statusz = i2c_io(0x31, 0x2D, 2, NULL, 0, &zval, 8)
+	
+}
+
+uint16_t powi(input, n)
+{
+	uint16_t i  = 0; 
+	uint16_t output = 1; 
+	for (i = 0; i<n; i++) output*=input; 
+	return output; 
+}
+
+double unit82double(unit8 input, char perc, char length)
+{
+	char i  = 0; 
+	double output =0; 
+	for (i  =0; i<length; i++) output+=input[i]*powi(2, i-perc); 
+	return output; 
 }
 
 
