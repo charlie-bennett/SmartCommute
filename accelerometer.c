@@ -1,29 +1,36 @@
 /*read z and y axis to find the speed, assuming low power mode on Accelerometer */
-
+#define FIFO_CTRL 0x2E
 unit8_t addresses[3][2]; 
 accel_addr = 
-{ {0x08, 0x09} //X (L,H)
- , {0x0a, 0x0b}, //Y (L,H)
- {0x0c, 0x0d} }; //Z (L,H)
+{ {0x28, 0x29} //X (L,H)
+ , {0x2a, 0x2b}, //Y (L,H)
+ {0x2c, 0x2d} }; //Z (L,H)
+
+void initAccelerometer()
+{
+   unit_t statusx 
+}
   
-float readAccelerometer(float output[3]){
+unit8_t readAccelerometer(float output[3]){
   
-	uint8_t raw_values8[3][2]; 
+  uint8_t raw_values8[3][2]; 
   int16_t temp; 
-  float output
-	uint8_t statusx = i2c_io(0x31, accel_addr[0], 1, NULL, 0, raw_values8[0], 1)
-  uint8_t statusx = i2c_io(0x31, accel_addr[0]+1, 1, NULL, 0, raw_values8[0]+1, 1)
-	uint8_t statusy = i2c_io(0x31, accel_addr[1], 1, NULL, 0, raw_values8[1], 1)
-  uint8_t statusy = i2c_io(0x31, accel_addr[1]+1, 1, NULL, 0, raw_values8[1]+1, 1)
-	uint8_t statusz = i2c_io(0x31, accel_addr[2], 1, NULL, 0, raw_values8[2], 1)
-  uint8_t statusz = i2c_io(0x31, accel_addr[2]+1, 1, NULL, 0, raw_values8[2]+1, 1)
+  float output;
   uint8_t i = 0; 
+  uint8_t status = 0; 
+  for (i = 0; i<3; i++)
+  {
+     status|= i2c_io(0x31, accel_addr[i], 1, NULL, 0, raw_values8[i], 1);
+     status |= i2c_io(0x31, accel_addr[i]+1, 1, NULL, 0, raw_values8[i]+1, 1);
+  }
+  
   for (i = 0; i<3; i++) 
   {
     temp = (unit16_t)raw_values8[i][0] | int16_t(raw_values8[i][1] <<8)
     temp>>=6; 
     output[i] = (float)temp / 15987; 
   }
+  return status; 
   
 }
 
