@@ -35,7 +35,7 @@ accel_addr =
   {0x2c, 0x2d}
 }; //Z (L,H)
 
-https://github.com/SuperHouse/esp-open-rtos/blob/master/extras/lis3dh/lis3dh.c
+//https://github.com/SuperHouse/esp-open-rtos/blob/master/extras/lis3dh/lis3dh.c
 
 unit8_t initAccelerometer()
 {

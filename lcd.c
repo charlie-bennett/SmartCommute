@@ -45,7 +45,7 @@ void lcd_init(void)
     lcd_writenibble(0x30); // Use lcd_writenibble to send 0b0011
     _delay_ms(5);               // Delay at least 4msec
 
-    lcd_writenibble(0x30);                  // Use lcd_writenibble to send 0b0011
+    lcd_writenibble(0x30);      // Use lcd_writenibble to send 0b0011
     _delay_us(120);             // Delay at least 100usec
 
     lcd_writenibble(0x30);    // Use lcd_writenibble to send 0b0011, no delay needed

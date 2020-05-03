@@ -4,7 +4,7 @@
 
 struct FIFOnode
 {
-  double val; 
+  float val; 
   FIFOnode* next; 
 };
 
@@ -12,20 +12,22 @@ struct FIFO
 {
   FIFOnode* front; 
   FIFOnode* back; 
-  char size; 
+  uint_8 size;
+};
+
 char pop_back(FIFO* F)
 {
   FIFOnode* dummy; 
-  if (F->front == NULL) return 1; 
+  if (F->front == NULL) return 1;
   dummy = F->front; 
-  F-> = F->front->next; 
-  if (F->front == NULL) F->back = NULL; 
+  F->front = F->front->next; 
+  if (F->front == NULL) F->back = NULL;
   free(dummy); 
-  return 0; 
+  return 0;
 }
   
   
-void new_FIFOnode(char val, FIFO* F)
+void new_FIFOnode(float val, FIFO* F)
 {
   struct FIFOnode* n = (struct FIFOnode*)malloc(sizeof(struct FIFOnode));
   n->val = val; 
@@ -56,8 +58,19 @@ FIFO* new_FIFO(void)
   F->back = NULL; 
   return F; 
 }
+
 void delete_FIFO(FIFO* F)
 {
   while (!pop_back(F)); 
   free(F); 
+}
+
+float calc_average(FIFO* F)
+{
+    float average = 0;
+    FIFOnode* node = F->front;
+    while(node != F->back){
+        average += node->val;
+    }
+    return (average/F->size);
 }

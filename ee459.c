@@ -5,22 +5,33 @@
 #include <util/atomic.h>
 #include "auxillary_io.c"
 #include "i2c.c"
+#include "FIFO.c"
 
 
-volatile int vol_up = 0;
-volatile int vol_down = 0;
-volatile int skip = 0;
-volatile int pause = 0;
+volatile uint8_t vol_up = 1;
+volatile uint8_t vol_down = 1;
+volatile uint8_t skip = 1;
+volatile uint8_t pause = 1;
+volatile uint8_t printBPM = 1;
+volatile uint8_t sendlight = 1;
+volatile uint8_t readTemp = 1;
+
 
 
 volatile unsigned char input;
 volatile char bluetoothbuffer[]
 volatile char lcdbuffer[]
 
-volatile unsigned int millisecondsElapsed = 0;
-volatile unsigned int capturemillisU = 0;
-volatile unsigned int capturemillisD = 0;
-volatile unsigned int capturemillisS = 0;
+volatile uint8_t millisecondsElapsed = 0;
+volatile uint8_t secondsElapsed = 0;
+volatile uint8_t capturemillisU = 0;
+volatile uint8_t capturemillisD = 0;
+volatile uint8_t capturemillisS = 0;
+volatile uint8_t bpm = 0;
+uint8_t lastTemp = 0;
+
+volatile struct FIFO lightFIFO = new_FIFO();
+
 
 
 //LCD (half duplex) , BLUETOOTH, GPS (half duplex)
@@ -56,15 +67,22 @@ UCSR0C = (3 << UCSZ00 ); // Set for async . operation , no parity ,
 }
 
 void setup() {
+	TCCR1B |= (1 << WGM12);
 	// Enable Timer Interrupt
 	TIMSK1 |= (1 << OCIE1A);
 	// with a factor of 8 and timer count up to 2000, emulates a millisecond timer
-	OCR1A = 2000; 
-	TCCR1B |= (1 << CS11);
+	OCR1A = 62; 
+	TCCR1B |= (1 << CS12);
 
 	//all ports B are inputs
 	DDRB |= 0x00;
 	PORTB &= 0x00;
+
+
+	TCCR0A |= (1 << WGM01);
+	TIMSK0 |= (1 << OCIE0A);
+	OCR0A = 62500;
+
 
 	DDRC |= 0x04;
 }
@@ -102,10 +120,11 @@ sei()
 setup();
 i2c_init ( BDIV );
 serial_init(3);
-ADC_init();
 
 int main(void)
 {
+	const uint16_t threshold = 550;
+
 	double yaxis = 0;
 	double zaxis = 0;
 	while(1) {
@@ -123,12 +142,51 @@ int main(void)
 			skip = 1;
 		}
 
-		//read accelerometer
+		if(printBPM == 0) {
+			//send data to LCD, bluetooth module
+			bpm = 0;
+			printBPM = 1;
+		}
+
+		if(sendlight == 0) {
+
+			adc_init(0X01);
+			uint8_t rawvalue = adc_sample();
+			new_FIFOnode(rawvalue, lightFIFO);
+			float avg = calc_average(lightFIFO);
+			//send Data to bluetooth module
+			sendlight = 1;
+		}
+
+		if(readTemp == 0) {
+			adc_init(0x00);
+			uint8_t rawvalue = adc_sample();
+			if(rawvalue > lastTemp){
+				if(rawvalue - lastTemp >= 3) {
+					//do something
+				}
+			}
+			else {
+				if(lastTemp - rawvalue >= 3) {
+					//do something
+				}
+			}
+			//send Data to bluetooth module
+			readTemp = 1;
+		}
+
+		//read heartbeatsensor (heartbeat detected)
+		adc_init(0x03);
+		uint8_t rawvalue = adc_sample();
+		if(rawvalue > threshold){
+			bpm += 1;
+		}
+
 	}
 
 }
 
-
+//every millisecond
 ISR(TIMER1_COMPA_vect)
 {
 	input = PINB;
@@ -175,4 +233,21 @@ ISR(TIMER1_COMPA_vect)
 		}
 		capturemillisS = 0;
 	}
+
+}
+
+//every second
+ISR(TIMER1_COMPA_vect){
+
+	secondsElapsed += 1;
+	printBPM = 0;
+
+	//TODO: DOUBLECHECK THIS PART
+	sendlight = 0;
+
+	if(secondsElapsed == 60){
+		readTemp = 0;
+		secondsElapsed = 0;
+	}
+
 }
