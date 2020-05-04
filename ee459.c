@@ -15,6 +15,7 @@ volatile uint8_t pause = 1;
 volatile uint8_t printBPM = 1;
 volatile uint8_t sendlight = 1;
 volatile uint8_t readTemp = 1;
+volatile uint8_t findspeed = 1;
 
 
 
@@ -52,6 +53,15 @@ char serial_in ()
 {
 	while ( !( UCSR0A & (1 << RXC0 )) );
 	return UDR0 ;
+}
+
+
+void sendLCD() {
+
+}
+
+void sendBluetooth() {
+
 }
 
 
@@ -148,6 +158,12 @@ int main(void)
 			printBPM = 1;
 		}
 
+		//ACCELEROMETER READ AND DISPLAY HERE
+		if(findspeed == 0){
+
+			findspeed = 1;
+		}
+
 		if(sendlight == 0) {
 
 			adc_init(0X01);
@@ -171,6 +187,7 @@ int main(void)
 					//do something
 				}
 			}
+			lastTemp = rawvalue;
 			//send Data to bluetooth module
 			readTemp = 1;
 		}
@@ -189,6 +206,8 @@ int main(void)
 //every millisecond
 ISR(TIMER1_COMPA_vect)
 {
+	millisecondsElapsed += 1;
+
 	input = PINB;
 	if( input & (1) == 0) {
 		capturemillisU = capturemillisU + 1;
@@ -232,6 +251,11 @@ ISR(TIMER1_COMPA_vect)
 			pause = 1;
 		}
 		capturemillisS = 0;
+	}
+
+	if(millisecondsElapsed == 30){
+		findspeed = 0;
+		millisecondsElapsed = 0;
 	}
 
 }
