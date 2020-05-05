@@ -24,7 +24,7 @@ volatile int8_t readingBluetooth = 0;
 
 
 
-uint8_t is_coordinates(char* input)
+uint8_t is_coordinates(const char* input)
 {
 	for (i2 = 0; i2 < 6; i2++)
 	{
@@ -76,7 +76,8 @@ void pollGPS(char temp_input)
 char* popGPS()
 {
 	if (FIFO_SIZE == 0) return NULL;
-	return GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE--)) % GPS_BUFFER_SIZE];
+	const char* output = GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE--)) % GPS_BUFFER_SIZE]
+	return output;
 }
 
 

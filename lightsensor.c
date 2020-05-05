@@ -23,7 +23,7 @@ void poll_light_sensor()
 {
   adc_init(0X01);
   rawvalue = adc_sample();
-  push_back_LSFIFO(rawvalue, LS_BUFFER, LS_FIFO_SIZE, LS_WP);
+  push_back_LSFIFO(rawvalue, LS_BUFFER, LS_FIFO_SIZE, &LS_WP);
 
 }
 
