@@ -1,9 +1,17 @@
+#define XYZ_BUFFER_SIZE 32
+
+float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
+uint8_t WP = 0;
+unit8_t addresses[3][2];
+float output_temp[3];
+
 /*read z and y axis to find the speed, assuming low power mode on Accelerometer */
 #define FIFO_CTRL 0x2E
 #define STREAM_MODE 0xFE
 #define BYPASS_MODE 0xFC
 #define CTRL_REG1 0x20
 #define CTRL_REG1_CONFIG 0x97
+
 //
 /*
 ODR3 ODR2 ODR1 ODR0 LPen Zen Yen Xen
@@ -20,22 +28,16 @@ ODR3 ODR2 ODR1 ODR0 Power mode selection
 1 0 0 0 Low power mode (1.60 kHz)
 */
 
+uint8_t i = 0;
+uint8_t j = 0;
 
-
-#define XYZ_BUFFER_SIZE 32
-unit8_t addresses[3][2];
-float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
-float output_temp[3];
-unit8_t WP = 0;
-
-accel_addr =
+#define accel_addr =
 {
   {0x28, 0x29} //X (L,H)
   , {0x2a, 0x2b}, //Y (L,H)
   {0x2c, 0x2d}
 }; //Z (L,H)
 
-//https://github.com/SuperHouse/esp-open-rtos/blob/master/extras/lis3dh/lis3dh.c
 
 unit8_t initAccelerometer()
 {
@@ -89,15 +91,21 @@ void push_back_FIFO(float* val, float** buffer, unit8_t BUFFER_SIZE, unit8_t& cu
   return;
 }
 
-float get_moving_average(float** buffer, unit8_t BUFFER_SIZE, unit8_t WP)
+void get_accelerometer_moving_average(float* output)
 {
   float runsum;
-  for (int i = 0; i < BUFFER_SIZE : i++)
+
+  for (j = 0; j < 3; j++)
   {
-    runsum += buffer[i];
+    for (i = 0; i < XYZ_BUFFER_SIZE; i++)
+    {
+      runsum += XYZ_BUFFER[i];
+    }
+    if (WP < XYZ_BUFFER_SIZE) output[j] = runsum / (float WP);
+    else output[j] = runsum / (float XYZ_BUFFER_SIZE);
+
   }
-  if (WP < BUFFER_SIZE) return runsum / (float WP);
-  return runsum / (float BUFFER_SIZE);
+  return;
 }
 
 
