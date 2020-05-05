@@ -71,16 +71,11 @@ void pollGPS(char temp_input)
 	return;
 }
 
-void get_data_length()
-{
-	return GPS_WP % GPS_BUFFER_SIZE;
-}
-
 char* popGPS()
 {
 	if (FIFO_SIZE == 0) return NULL;
 	cli(); //temporarily disable inturrupts
-	return GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE++)) % GPS_BUFFER_SIZE];
+	return GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE--)) % GPS_BUFFER_SIZE];
 	sei(); //re-enable
 }
 
