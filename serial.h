@@ -1,8 +1,4 @@
-#ifndef SERIAL_H_
-#define SERIAL_H_
+extern void serial_out (char);
+extern char serial_in ();
+extern void serial_init ( unsigned short );
 
-void serial_out (char);
-char serial_in ();
-void serial_init ( unsigned short );
-
-#ENDIF
