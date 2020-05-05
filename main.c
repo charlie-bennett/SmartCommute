@@ -21,6 +21,7 @@ volatile uint8_t readTemp = 1;
 volatile uint8_t findspeed = 1;
 volatile uint8_t checkGPS = 1;
 volatile uint8_t pollSpeed = 1;
+volatile uint8_t poll_light = 1;
 
 
 
@@ -113,7 +114,7 @@ void setup()
 	TCCR1B |= (1 << WGM12);
 	// Enable Timer Interrupt
 	TIMSK1 |= (1 << OCIE1A);
-	// with a factor of 8 and timer count up to 2000, emulates a millisecond timer
+	// with a factor of 8 and timer count up to 62, emulates a millisecond timer
 	OCR1A = 62;
 	TCCR1B |= (1 << CS12);
 
@@ -213,12 +214,12 @@ int main(void)
 			serial_wait();
 			sendBluetooth();
 			serial_wait();
-			message = "G,"
+			message = "G,";
 			uint8_t mindex = 2;
 			uint8_t i;
 			for(i = 20; i < 44; i++)
 			{
-				mesesage[mindex++] = location[i];
+				message[mindex++] = location[i];
 			}
 			serial_wait();
 			sendBluetooth();
@@ -341,7 +342,7 @@ ISR(TIMER1_COMPA_vect)
 	millisecondsElapsed += 1;
 
 	input = PINB;
-	if ( input & (1) == 0)
+	if ( (input & (1)) == 0)
 	{
 		capturemillisU = capturemillisU + 1;
 		if (capturemillisU >= 20 && buzzerflag == -1)
@@ -361,7 +362,7 @@ ISR(TIMER1_COMPA_vect)
 		capturemillisU = 0;
 	}
 
-	if ( input & (1 << 1) == 0)
+	if ( (input & (1 << 1)) == 0)
 	{
 		capturemillisD = capturemillisD + 1;
 		if (capturemillisD >= 20)
@@ -376,7 +377,7 @@ ISR(TIMER1_COMPA_vect)
 		capturemillisD = 0;
 	}
 
-	if ( input & (1 << 2) == 0)
+	if ( (input & (1 << 2)) == 0)
 	{
 		capturemillisS = capturemillisS + 1;
 		if (capturemillisS >= 200)
@@ -415,7 +416,7 @@ ISR(TIMER1_COMPA_vect)
 }
 
 //every second
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_COMPA_vect)
 {
 
 	secondsElapsed += 1;
