@@ -1,17 +1,12 @@
 #define XYZ_BUFFER_SIZE 32
 
-float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
-uint8_t WP = 0;
-unit8_t addresses[3][2];
-float output_temp[3];
-
 /*read z and y axis to find the speed, assuming low power mode on Accelerometer */
 #define FIFO_CTRL 0x2E
 #define STREAM_MODE 0xFE
 #define BYPASS_MODE 0xFC
 #define CTRL_REG1 0x20
 #define CTRL_REG1_CONFIG 0x97
-
+#define XYZ_BUFFER_SIZE 32
 //
 /*
 ODR3 ODR2 ODR1 ODR0 LPen Zen Yen Xen
@@ -28,10 +23,14 @@ ODR3 ODR2 ODR1 ODR0 Power mode selection
 1 0 0 0 Low power mode (1.60 kHz)
 */
 
+
+float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
+uint8_t WP = 0;
+uint8_t addresses[3][2];
+float output_temp[3];
 uint8_t i = 0;
 uint8_t j = 0;
 
-#define XYZ_BUFFER_SIZE 32
 uint8_t addresses[3][2];
 float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
 float output_temp[3];
