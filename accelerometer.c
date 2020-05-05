@@ -92,7 +92,7 @@ uint8_t readAccelerometer(float output[3])
 
 }
 
-void push_back_FIFO(float* val, float** buffer, uint8_t BUFFER_SIZE, uint8_t* current_loc)
+void push_back_FIFO(float* val, float*** buffer, uint8_t BUFFER_SIZE, uint8_t* current_loc)
 {
 
   buffer[((*current_loc) % BUFFER_SIZE)][0] = val[0];
@@ -113,7 +113,7 @@ void get_accelerometer_moving_average(float* output)
       runsum += XYZ_BUFFER[i][j];
     }
     if (WP < XYZ_BUFFER_SIZE) output[j] = runsum / ((float) WP);
-    else output[j] = runsum / (float XYZ_BUFFER_SIZE);
+    else output[j] = runsum / ((float) XYZ_BUFFER_SIZE);
 
   }
   return;
