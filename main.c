@@ -3,10 +3,12 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <util/atomic.h>
+#include "accelerometer.h"
 #include "gps.h"
-#include "auxillary_io.h"
+#include "adc.h"
 #include "i2c.h"
-#include "FIFO.h"
+#include "lightsensor.h"
+#include "serial.h"
 
 
 volatile uint8_t vol_up = 1;
@@ -45,7 +47,7 @@ float AC_mavg[3];
 //LCD (half duplex) , BLUETOOTH, GPS (half duplex)
 
 
-serial_wait()
+void serial_wait()
 {
 	//check to see if still transmitting, wait till finished transmitting
 	while (UCSROA & (1 << TXC0) == 1);

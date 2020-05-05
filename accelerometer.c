@@ -23,10 +23,10 @@ ODR3 ODR2 ODR1 ODR0 Power mode selection
 
 
 #define XYZ_BUFFER_SIZE 32
-unit8_t addresses[3][2];
+uint8_t addresses[3][2];
 float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
 float output_temp[3];
-unit8_t WP = 0;
+uint8_t WP = 0;
 
 accel_addr =
 {
@@ -37,7 +37,7 @@ accel_addr =
 
 //https://github.com/SuperHouse/esp-open-rtos/blob/master/extras/lis3dh/lis3dh.c
 
-unit8_t initAccelerometer()
+uint8_t initAccelerometer()
 {
   uint8_t temp;
   uint8_t status = i2c_io(0x31, FIFO_CTRL, 1, &temp, 1, NULL, 0);
@@ -45,14 +45,14 @@ unit8_t initAccelerometer()
   uint8_t status |= i2c_io(0x31, FIFO_CTRL, 1, &temp, 1, NULL, 0);
 }
 
-unit8_t pollAccelerometer()
+uint8_t pollAccelerometer()
 {
 
   uint8_t status = readAccelerometer(output_temp);
   push_back_FIFO(output_temp, XYZ_BUFFER, XYZ_BUFFER_SIZE, WP);
   return status;
 }
-unit8_t readAccelerometer(float output[3])
+uint8_t readAccelerometer(float output[3])
 {
 
   //no need to poll to see if data is ready since it will refresh at
@@ -79,7 +79,7 @@ unit8_t readAccelerometer(float output[3])
 
 }
 
-void push_back_FIFO(float* val, float** buffer, unit8_t BUFFER_SIZE, unit8_t& current_loc)
+void push_back_FIFO(float* val, float** buffer, uint8_t BUFFER_SIZE, uint8_t& current_loc)
 {
 
   buffer[(current_loc % BUFFER_SIZE)][0] = val[0];
@@ -89,7 +89,7 @@ void push_back_FIFO(float* val, float** buffer, unit8_t BUFFER_SIZE, unit8_t& cu
   return;
 }
 
-float get_moving_average(float** buffer, unit8_t BUFFER_SIZE, unit8_t WP)
+float get_moving_average(float** buffer, uint8_t BUFFER_SIZE, uint8_t WP)
 {
   float runsum;
   for (int i = 0; i < BUFFER_SIZE : i++)
