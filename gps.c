@@ -45,7 +45,7 @@ void pollGPS(char temp_input)
 	if (!invalid_flag) GPS_DATA_BUFFER[GPS_WP % GPS_BUFFER_SIZE][GPS_BUFF_LOC[GPS_WP]++] = temp_input;
 	if (GPS_BUFF_LOC[GPS_WP % GPS_BUFFER_SIZE] == 6)
 	{
-		if (!is_coordinates()) //TODO
+		if (!is_coordinates(GPS_DATA_BUFFER[GPS_WP % GPS_BUFFER_SIZE])) //TODO
 		{
 			GPS_BUFF_LOC[GPS_WP % GPS_BUFFER_SIZE] = 0; //reset
 			invalid_flag == 1;
@@ -74,9 +74,7 @@ void pollGPS(char temp_input)
 char* popGPS()
 {
 	if (FIFO_SIZE == 0) return NULL;
-	cli(); //temporarily disable inturrupts
 	return GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE--)) % GPS_BUFFER_SIZE];
-	sei(); //re-enable
 }
 
 
