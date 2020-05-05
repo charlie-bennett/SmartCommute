@@ -104,7 +104,7 @@ void push_back_FIFO(float* val, float** buffer, uint8_t BUFFER_SIZE, uint8_t* cu
 
 void get_accelerometer_moving_average(float* output)
 {
-  float runsum;
+  float runsum = 0;
 
   for (j = 0; j < 3; j++)
   {

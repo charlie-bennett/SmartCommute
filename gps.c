@@ -37,7 +37,7 @@ void gps_init()
 {
 	invalid_flag = 0;
 	FIFO_SIZE = 0;
-	for (i = 0; i < GPS_BUFFER_SIZE; i++) GPS_WB[i] = 0;
+	//for (i = 0; i < GPS_BUFFER_SIZE; i++) GPS_WB[i] = 0;
 	GPS_WP = 0;
 	GPS_RX_FLAG = 0;
 }
@@ -50,7 +50,7 @@ void pollGPS(char temp_input)
 		if (!is_coordinates(GPS_DATA_BUFFER[GPS_WP % GPS_BUFFER_SIZE])) //TODO
 		{
 			GPS_BUFF_LOC[GPS_WP % GPS_BUFFER_SIZE] = 0; //reset
-			invalid_flag == 1;
+			invalid_flag = 1;
 		}
 	}
 	if (temp_input == '\n')
@@ -73,7 +73,7 @@ void pollGPS(char temp_input)
 	return;
 }
 
-char* popGPS()
+const char* popGPS()
 {
 	if (FIFO_SIZE == 0) return NULL;
 	return GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE--)) % GPS_BUFFER_SIZE];
@@ -86,7 +86,7 @@ ISR(USART_RX_vect)
 
 	if(readingBluetooth == 0)
     {
-        if(c == "D")
+        if(c == 'D')
         {
             buzzerflag = 0;
         }
