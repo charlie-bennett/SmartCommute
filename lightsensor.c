@@ -11,7 +11,7 @@ uint8_t i = 0;
 float runsum;
 
 
-void push_back_LSFIFO(uint8_t val, uint8_t buffer, uint8_t BUFFER_SIZE, uint8_t* current_loc)
+void push_back_LSFIFO(uint8_t val, uint8_t* buffer, uint8_t BUFFER_SIZE, uint8_t* current_loc)
 {
 
   buffer[((*current_loc) % BUFFER_SIZE)] = val;
@@ -19,7 +19,7 @@ void push_back_LSFIFO(uint8_t val, uint8_t buffer, uint8_t BUFFER_SIZE, uint8_t*
   return;
 }
 
-uint8_t poll_light_sensor()
+void poll_light_sensor()
 {
   adc_init(0X01);
   rawvalue = adc_sample();
@@ -33,6 +33,6 @@ float get_light_sensor_moving_average()
   {
     runsum += LS_BUFFER[i];
   }
-  if (LS_WP < LS_FIFO_SIZE) return runsum / ((float) WP);
+  if (LS_WP < LS_FIFO_SIZE) return runsum / ((float) LS_WP);
   return runsum / ((float) LS_FIFO_SIZE);
 }
