@@ -8,15 +8,16 @@
 #include "FIFO.c"
 
 
-volatile uint8_t vol_up = 1;
-volatile uint8_t vol_down = 1;
-volatile uint8_t skip = 1;
-volatile uint8_t pause = 1;
-volatile uint8_t printBPM = 1;
-volatile uint8_t sendlight = 1;
-volatile uint8_t readTemp = 1;
-volatile uint8_t findspeed = 1;
-volatile uint8_t checkGPS = 1;
+volatile bool vol_up = 1;
+volatile bool vol_down = 1;
+volatile bool skip = 1;
+volatile bool pause = 1;
+volatile bool printBPM = 1;
+volatile bool sendlight = 1;
+volatile bool readTemp = 1;
+volatile bool findspeed = 1;
+volatile bool checkGPS = 1;
+volatile bool pollSpeed = 1;
 
 
 
@@ -183,10 +184,15 @@ int main(void)
 		}
 
 		//ACCELEROMETER READ AND DISPLAY HERE
-		if (findspeed == 0)
+		if (pollSpeed == 0)
 		{
-			findspeed = 1;
 			pollAccelerometer();
+			findspeed = 1;
+		}
+
+		if (findspeed)
+		{
+			
 		}
 
 		if (sendlight == 0)
@@ -225,7 +231,7 @@ int main(void)
 					sendLCD();
 				}
 			}
-			
+
 			lastTemp = rawvalue;
 			//send Data to bluetooth module
 			readTemp = 1;
@@ -304,6 +310,11 @@ ISR(TIMER1_COMPA_vect)
 			pause = 1;
 		}
 		capturemillisS = 0;
+	}
+
+	if(millisecondsElapsed % 5 == 0)
+	{
+		pollSpeed = 0;
 	}
 
 	if (millisecondsElapsed == 30)
