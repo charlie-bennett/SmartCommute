@@ -16,12 +16,12 @@ volatile uint8_t printBPM = 1;
 volatile uint8_t sendlight = 1;
 volatile uint8_t readTemp = 1;
 volatile uint8_t findspeed = 1;
+volatile uint8_t checkGPS = 1;
 
 
 
 volatile unsigned char input;
-volatile char bluetoothbuffer[32];
-volatile char lcdbuffer[32];
+volatile char message[32];
 
 volatile uint8_t millisecondsElapsed = 0;
 volatile uint8_t secondsElapsed = 0;
@@ -61,12 +61,29 @@ char serial_in ()
 
 void sendLCD()
 {
+	//check to see if still transmitting, wait till finished transmitting
+	while(UCSROA & (1 << TXC0) == 1);
+	//set port D to mux 0
+	PORTD &= !(1 << 4)
+	uint8_t i = 0;
+    while (message[i] != '\0')
+    {
+        serial_out(message[i++]);
+    }
 
 }
 
 void sendBluetooth()
 {
-
+	//check to see if still transmitting, wait till finished transmitting
+	while(UCSROA & (1 << TXC0) == 1);
+	//set port D to mux 1
+	PORTD |= !(1 << 4)
+	uint8_t i = 0;
+    while (message[i] != '\0')
+    {
+        serial_out(message[i++]);
+    }
 }
 
 
@@ -80,9 +97,9 @@ void serial_init ( unsigned short ubrr )
 	UCSR0B |= (1 << RXEN0 ); // Turn on receiver
 	UCSR0C = (3 << UCSZ00 ); // Set for async . operation , no parity ,
 
-DDRD |= (1 << 3) | (1 << 4);
-PORTD &= !(1 << 3)	;
-PORTD &= !(1 << 4);
+	DDRD |= (1 << 3) | (1 << 4);
+	PORTD &= !(1 << 3);
+	PORTD &= !(1 << 4);
 }
 
 void setup()
@@ -129,22 +146,38 @@ int main(void)
 		if (vol_up == 0)
 		{
 			//send data through bluetooth module
+			message = "M4";
+			sendBluetooth();
 			vol_up = 1;
 		}
 		if (vol_down == 0)
 		{
 			//send data through bluetooth module
+			message = "M1";
+			sendBluetooth();
 			vol_down = 1;
 		}
 		if (skip == 0)
 		{
 			//send data through bluetooth module
+			message = "M2";
+			sendBluetooth();
 			skip = 1;
+		}
+
+		if(pause == 0)
+		{
+			message = "M3";
+			sendBluetooth();
+			pause = 1;
 		}
 
 		if (printBPM == 0)
 		{
 			//send data to LCD, bluetooth module
+			sprintf(message, "H%d", bpm);
+			sendBluetooth();
+			sendLCD();
 			bpm = 0;
 			printBPM = 1;
 		}
@@ -152,7 +185,6 @@ int main(void)
 		//ACCELEROMETER READ AND DISPLAY HERE
 		if (findspeed == 0)
 		{
-
 			findspeed = 1;
 			pollAccelerometer();
 		}
@@ -165,6 +197,7 @@ int main(void)
 			new_FIFOnode(rawvalue, lightFIFO);
 			float avg = calc_average(lightFIFO);
 			//send Data to bluetooth module
+			sprintf(message, "L%f", avg);
 			sendlight = 1;
 		}
 
@@ -177,6 +210,9 @@ int main(void)
 				if (rawvalue - lastTemp >= 3)
 				{
 					//do something
+					sprintf(message, "T%d", rawvalue);
+					sendBluetooth();
+					sendLCD();
 				}
 			}
 			else
@@ -184,8 +220,12 @@ int main(void)
 				if (lastTemp - rawvalue >= 3)
 				{
 					//do something
+					sprintf(message, "T%d", rawvalue);
+					sendBluetooth();
+					sendLCD();
 				}
 			}
+			
 			lastTemp = rawvalue;
 			//send Data to bluetooth module
 			readTemp = 1;
@@ -281,17 +321,21 @@ ISR(TIMER1_COMPA_vect)
 	secondsElapsed += 1;
 
 	//TODO: DOUBLECHECK THIS PART
-	if(secondsElapsed = 5){
+	if(secondsElapsed = 5)
+	{
 		sendlight = 0;
 	}
 
-	if(secondsElapsed == 60){
+	if(secondsElapsed == 60)
+	{
 		printBPM = 0;
+		checkGPS = 0;
 		minutesElapsed += 1;
 		secondsElapsed += 0;
 	}
 
-	if(minutesElapsed == 5){
+	if(minutesElapsed == 5)
+	{
 		readTemp = 0;
 		minutesElapsed = 0;
 	}
