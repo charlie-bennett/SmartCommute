@@ -39,7 +39,7 @@ float output_temp[3];
 uint8_t i = 0;
 uint8_t j = 0;
 
-char accel_addr[3][2] =
+uint8_t accel_addr[3][2] =
 {
   {0x28, 0x29}, //X (L,H)
   {0x2a, 0x2b}, //Y (L,H)
@@ -74,7 +74,6 @@ uint8_t readAccelerometer(float output[3])
 
   uint8_t raw_values8[3][2];
   int16_t temp;
-  float output;
   uint8_t i = 0;
   uint8_t status = 0;
   for (i = 0; i < 3; i++)
@@ -85,8 +84,8 @@ uint8_t readAccelerometer(float output[3])
 
   for (i = 0; i < 3; i++)
   {
-    temp = (unit16_t)raw_values8[i][0] | int16_t(raw_values8[i][1] << 8)
-           temp >>= 6;
+    temp = (uint16_t)raw_values8[i][0] | int16_t(raw_values8[i][1] << 8);
+    temp >>= 6;
     output[i] = (float)temp / 15987;
   }
   return status;
