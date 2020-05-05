@@ -63,7 +63,7 @@ uint8_t pollAccelerometer()
 {
 
   uint8_t status = readAccelerometer(output_temp);
-  push_back_FIFO(output_temp, XYZ_BUFFER, XYZ_BUFFER_SIZE, WP);
+  push_back_FIFO(output_temp, XYZ_BUFFER, XYZ_BUFFER_SIZE, &WP);
   return status;
 }
 uint8_t readAccelerometer(float output[3])
@@ -84,7 +84,7 @@ uint8_t readAccelerometer(float output[3])
 
   for (i = 0; i < 3; i++)
   {
-    temp = (uint16_t)raw_values8[i][0] | int16_t(raw_values8[i][1] << 8);
+    temp = (((uint16_t)raw_values8[i][0]) | ((int16_t)(raw_values8[i][1] << 8)));
     temp >>= 6;
     output[i] = (float)temp / 15987;
   }
@@ -92,13 +92,13 @@ uint8_t readAccelerometer(float output[3])
 
 }
 
-void push_back_FIFO(float* val, float** buffer, uint8_t BUFFER_SIZE, uint8_t& current_loc)
+void push_back_FIFO(float* val, float** buffer, uint8_t BUFFER_SIZE, uint8_t* current_loc)
 {
 
   buffer[(current_loc % BUFFER_SIZE)][0] = val[0];
   buffer[(current_loc % BUFFER_SIZE)][1] = val[1];
   buffer[(current_loc % BUFFER_SIZE)][2] = val[2];
-  current_loc++;
+  (*current_loc)++;
   return;
 }
 
@@ -110,7 +110,7 @@ void get_accelerometer_moving_average(float* output)
   {
     for (i = 0; i < XYZ_BUFFER_SIZE; i++)
     {
-      runsum += XYZ_BUFFER[i];
+      runsum += XYZ_BUFFER[i][j];
     }
     if (WP < XYZ_BUFFER_SIZE) output[j] = runsum / (float WP);
     else output[j] = runsum / (float XYZ_BUFFER_SIZE);
