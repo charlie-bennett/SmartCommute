@@ -92,12 +92,12 @@ uint8_t readAccelerometer(float output[3])
 
 }
 
-void push_back_FIFO(float* val, float** buffer, uint8_t BUFFER_SIZE, uint8_t* current_loc)
+void push_back_FIFO(float* val, float buffer[XYZ_BUFFER_SIZE][3], uint8_t BUFFER_SIZE, uint8_t* current_loc)
 {
 
-  buffer[(current_loc % BUFFER_SIZE)][0] = val[0];
-  buffer[(current_loc % BUFFER_SIZE)][1] = val[1];
-  buffer[(current_loc % BUFFER_SIZE)][2] = val[2];
+  buffer[((*current_loc) % BUFFER_SIZE)][0] = val[0];
+  buffer[((*current_loc) % BUFFER_SIZE)][1] = val[1];
+  buffer[((*current_loc) % BUFFER_SIZE)][2] = val[2];
   (*current_loc)++;
   return;
 }
