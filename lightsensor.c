@@ -1,3 +1,6 @@
+#include <avr/io.h>
+#include <stdio.h>
+
 #define LS_FIFO_SIZE 32
 uint8_t LS_WP = 0;
 uint8_t rawvalue;

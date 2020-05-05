@@ -1,3 +1,6 @@
+#include <avr/io.h>
+#include <stdio.h>
+#include <util/atomic.h>
 #include <avr/interrupt.h>
 #include "gps.h"
 #include "serial.h"

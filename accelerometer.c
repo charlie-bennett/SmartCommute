@@ -3,6 +3,7 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <util/atomic.h>
+#include "accelerometer.h"
 
 #define XYZ_BUFFER_SIZE 32
 
