@@ -8,7 +8,7 @@
 #define GPS_BUFFER_SIZE 4
 
 static char prefix[6] = "$GPRMC";
-uint8_t i = 0;
+uint8_t i2 = 0;
 char temp_input;
 
 volatile char GPS_DATA_BUFFER [GPS_BUFFER_SIZE][GPS_LENGTH];
@@ -26,9 +26,9 @@ volatile int8_t readingBluetooth = 0;
 
 uint8_t is_coordinates(char* input)
 {
-	for (i = 0; i < 6; i++)
+	for (i2 = 0; i2 < 6; i2++)
 	{
-		if (prefix[i] != input[i]) return 0;
+		if (prefix[i2] != input[i2]) return 0;
 	}
 	return 1;
 }
