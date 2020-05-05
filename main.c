@@ -1,6 +1,5 @@
 #include <avr/io.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <util/atomic.h>
@@ -156,7 +155,6 @@ int main(void)
 		{
 			//send data to LCD, bluetooth module
 			serial_wait();
-			free(message);
 			sprintf(message, "H,%d", bpm * 6);
 			sendBluetooth();
 			serial_wait();
