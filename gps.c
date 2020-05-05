@@ -34,12 +34,9 @@ void gps_init()
 {
 	invalid_flag = 0;
 	FIFO_SIZE = 0;
-	serial_init(ubrr); //TODO : Andrew set mux bit
 	for (i = 0; i < GPS_BUFFER_SIZE; i++) GPS_WB[i] = 0;
 	GPS_WP = 0;
 	GPS_RX_FLAG = 0;
-	UCSR0B |= (1 << RXCIE0); // Enable Receive interrupt
-	sei();
 }
 
 void pollGPS(char temp_input)

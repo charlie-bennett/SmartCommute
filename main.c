@@ -146,6 +146,7 @@ int main(void)
 	setup();
 	i2c_init ( BDIV );
 	serial_init(3);
+	gps_init();
 
 	while (1)
 	{
