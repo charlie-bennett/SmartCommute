@@ -1,3 +1,10 @@
+#include <avr/io.h>
+#include <stdio.h>
+#include <util/delay.h>
+#include <avr/interrupt.h>
+#include <util/atomic.h>
+#include "accelerometer.h"
+
 #define XYZ_BUFFER_SIZE 32
 
 /*read z and y axis to find the speed, assuming low power mode on Accelerometer */
