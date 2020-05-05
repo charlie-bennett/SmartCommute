@@ -23,7 +23,7 @@ void adc_init(unsigned char channel)
 
 }
 
-unsigned uint8_t adc_sample()
+uint8_t adc_sample()
 {
     // Convert an analog input and return the 8-bit result
 	ADCSRA |= (1 << 6);

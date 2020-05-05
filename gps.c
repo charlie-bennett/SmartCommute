@@ -8,7 +8,7 @@
 #define GPS_BUFFER_SIZE 4
 
 static char prefix[6] = "$GPRMC";
-uint i = 0;
+uint8_t i = 0;
 char temp_input;
 
 volatile char GPS_DATA_BUFFER [GPS_BUFFER_SIZE][GPS_LENGTH];
