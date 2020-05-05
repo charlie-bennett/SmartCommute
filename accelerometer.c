@@ -4,6 +4,7 @@
 #include <avr/interrupt.h>
 #include <util/atomic.h>
 #include "accelerometer.h"
+#include "i2c.h"
 
 #define XYZ_BUFFER_SIZE 32
 
@@ -38,25 +39,24 @@ float output_temp[3];
 uint8_t i = 0;
 uint8_t j = 0;
 
-uint8_t addresses[3][2];
-float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
-float output_temp[3];
-uint8_t WP = 0;
-
-char* accel_addr =
+char accel_addr[3][2] =
 {
-  {0x28, 0x29} //X (L,H)
-  , {0x2a, 0x2b}, //Y (L,H)
+  {0x28, 0x29}, //X (L,H)
+  {0x2a, 0x2b}, //Y (L,H)
   {0x2c, 0x2d}
 }; //Z (L,H)
 
 
 uint8_t initAccelerometer()
 {
+  uint8_t literal = FIFO_CTRL;
   uint8_t temp;
-  uint8_t status = i2c_io(0x31, FIFO_CTRL, 1, &temp, 1, NULL, 0);
+  uint8_t status = i2c_io(0x31, &literal, 1, &temp, 1, NULL, 0);
+  if(status != 0)
+    return status;
   temp &= BYPASS_MODE;
-  uint8_t status |= i2c_io(0x31, FIFO_CTRL, 1, &temp, 1, NULL, 0);
+  status = i2c_io(0x31, &literal, 1, &temp, 1, NULL, 0);
+  return status;
 }
 
 uint8_t pollAccelerometer()
