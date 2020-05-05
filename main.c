@@ -25,7 +25,7 @@ volatile uint8_t pollSpeed = 1;
 
 
 volatile unsigned char input;
-volatile char message[32];
+volatile char* message;
 
 volatile uint8_t millisecondsElapsed = 0;
 volatile uint8_t secondsElapsed = 0;
@@ -35,8 +35,6 @@ volatile uint8_t capturemillisD = 0;
 volatile uint8_t capturemillisS = 0;
 volatile uint8_t bpm = 0;
 uint8_t lastTemp = 0;
-
-volatile struct FIFO lightFIFO = new_FIFO();
 
 uint8_t HEARTBEAT_STATE;
 float LS_mavg;
@@ -50,7 +48,7 @@ float AC_mavg[3];
 void serial_wait()
 {
 	//check to see if still transmitting, wait till finished transmitting
-	while (UCSROA & (1 << TXC0) == 1);
+	while ((UCSR0A & (1 << TXC0)) == 1);
 }
 
 /*
