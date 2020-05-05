@@ -20,11 +20,12 @@ volatile uint8_t findspeed = 1;
 
 
 volatile unsigned char input;
-volatile char bluetoothbuffer[]
-volatile char lcdbuffer[]
+volatile char bluetoothbuffer[32];
+volatile char lcdbuffer[32];
 
 volatile uint8_t millisecondsElapsed = 0;
 volatile uint8_t secondsElapsed = 0;
+volatile uint8_t minutesElapsed = 0;
 volatile uint8_t capturemillisU = 0;
 volatile uint8_t capturemillisD = 0;
 volatile uint8_t capturemillisS = 0;
@@ -74,6 +75,9 @@ UCSR0B |= (1 << TXEN0 ); // Turn on transmitter
 UCSR0B |= (1 << RXEN0 ); // Turn on receiver
 UCSR0C = (3 << UCSZ00 ); // Set for async . operation , no parity ,
 
+DDRD |= (1 << 3) | (1 << 4);
+PORTD &= !(1 << 3)	;
+PORTD &= !(1 << 4);
 }
 
 void setup() {
@@ -88,11 +92,9 @@ void setup() {
 	DDRB |= 0x00;
 	PORTB &= 0x00;
 
-
 	TCCR0A |= (1 << WGM01);
 	TIMSK0 |= (1 << OCIE0A);
 	OCR0A = 62500;
-
 
 	DDRC |= 0x04;
 }
@@ -126,7 +128,7 @@ double unit82double(unit8 input, char perc, char length)
 # define FOSC 7372800
 # define BDIV ( FOSC / 100000 - 16) / 2 + 1
 
-sei()
+sei();
 setup();
 i2c_init ( BDIV );
 serial_init(3);
@@ -264,14 +266,21 @@ ISR(TIMER1_COMPA_vect)
 ISR(TIMER1_COMPA_vect){
 
 	secondsElapsed += 1;
-	printBPM = 0;
 
 	//TODO: DOUBLECHECK THIS PART
-	sendlight = 0;
+	if(secondsElapsed = 5){
+		sendlight = 0;
+	}
 
 	if(secondsElapsed == 60){
+		printBPM = 0;
+		minutesElapsed += 1;
+		secondsElapsed += 0;
+	}
+
+	if(minutesElapsed == 5){
 		readTemp = 0;
-		secondsElapsed = 0;
+		minutesElapsed = 0;
 	}
 
 }
