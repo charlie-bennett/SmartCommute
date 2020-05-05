@@ -36,6 +36,8 @@ uint8_t lastTemp = 0;
 volatile struct FIFO lightFIFO = new_FIFO();
 
 uint8_t HEARTBEAT_STATE;
+float LS_mavg;
+float AC_mavg[3];
 
 
 
@@ -63,28 +65,28 @@ char serial_in ()
 void sendLCD()
 {
 	//check to see if still transmitting, wait till finished transmitting
-	while(UCSROA & (1 << TXC0) == 1);
+	while (UCSROA & (1 << TXC0) == 1);
 	//set port D to mux 0
 	PORTD &= !(1 << 4)
-	uint8_t i = 0;
-    while (message[i] != '\0')
-    {
-        serial_out(message[i++]);
-    }
+	         uint8_t i = 0;
+	while (message[i] != '\0')
+	{
+		serial_out(message[i++]);
+	}
 
 }
 
 void sendBluetooth()
 {
 	//check to see if still transmitting, wait till finished transmitting
-	while(UCSROA & (1 << TXC0) == 1);
+	while (UCSROA & (1 << TXC0) == 1);
 	//set port D to mux 1
 	PORTD |= !(1 << 4)
-	uint8_t i = 0;
-    while (message[i] != '\0')
-    {
-        serial_out(message[i++]);
-    }
+	         uint8_t i = 0;
+	while (message[i] != '\0')
+	{
+		serial_out(message[i++]);
+	}
 }
 
 
@@ -166,7 +168,7 @@ int main(void)
 			skip = 1;
 		}
 
-		if(pause == 0)
+		if (pause == 0)
 		{
 			message = "M3";
 			sendBluetooth();
@@ -176,7 +178,7 @@ int main(void)
 		if (printBPM == 0)
 		{
 			//send data to LCD, bluetooth module
-			sprintf(message, "H%d", bpm);
+			sprintf(message, "H%d", bpm * 6);
 			sendBluetooth();
 			sendLCD();
 			bpm = 0;
@@ -192,18 +194,21 @@ int main(void)
 
 		if (findspeed)
 		{
-			
+			get_accelerometer_moving_average(AC_mavg);
+			sprintf(message, ) //TODO Andrew
+		}
+
+		if (poll_light == 0)
+		{
+			poll_light_sensor();
+			poll_light++;
 		}
 
 		if (sendlight == 0)
 		{
 
-			adc_init(0X01);
-			uint8_t rawvalue = adc_sample();
-			new_FIFOnode(rawvalue, lightFIFO);
-			float avg = calc_average(lightFIFO);
-			//send Data to bluetooth module
-			sprintf(message, "L%f", avg);
+			LS_mavg = get_light_sensor_moving_average();
+			sprintf(message, "L%f", LS_mavg);
 			sendlight = 1;
 		}
 
@@ -312,7 +317,7 @@ ISR(TIMER1_COMPA_vect)
 		capturemillisS = 0;
 	}
 
-	if(millisecondsElapsed % 5 == 0)
+	if (millisecondsElapsed % 5 == 0)
 	{
 		pollSpeed = 0;
 	}
@@ -332,20 +337,28 @@ ISR(TIMER1_COMPA_vect)
 	secondsElapsed += 1;
 
 	//TODO: DOUBLECHECK THIS PART
-	if(secondsElapsed = 5)
+	if ((!secondsElapsed % 5))
 	{
 		sendlight = 0;
 	}
 
-	if(secondsElapsed == 60)
+	if (secondsElapsed % 2)
 	{
-		printBPM = 0;
+		poll_light = 0;
+	}
+	if (secondsElapsed == 10)
+	{
 		checkGPS = 0;
+		printBPM = 0;
+	}
+	if (secondsElapsed == 60)
+	{
+
 		minutesElapsed += 1;
 		secondsElapsed += 0;
 	}
 
-	if(minutesElapsed == 5)
+	if (minutesElapsed == 5)
 	{
 		readTemp = 0;
 		minutesElapsed = 0;
