@@ -1,5 +1,7 @@
 #include <avr/io.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <util/atomic.h>
