@@ -155,6 +155,7 @@ int main(void)
 		{
 			//send data to LCD, bluetooth module
 			serial_wait();
+			free(message);
 			sprintf(message, "H,%d", bpm * 6);
 			sendBluetooth();
 			serial_wait();
