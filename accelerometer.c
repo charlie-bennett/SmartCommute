@@ -31,7 +31,13 @@ ODR3 ODR2 ODR1 ODR0 Power mode selection
 uint8_t i = 0;
 uint8_t j = 0;
 
-#define accel_addr =
+#define XYZ_BUFFER_SIZE 32
+uint8_t addresses[3][2];
+float XYZ_BUFFER[XYZ_BUFFER_SIZE][3];
+float output_temp[3];
+uint8_t WP = 0;
+
+char* accel_addr =
 {
   {0x28, 0x29} //X (L,H)
   , {0x2a, 0x2b}, //Y (L,H)
@@ -39,7 +45,7 @@ uint8_t j = 0;
 }; //Z (L,H)
 
 
-unit8_t initAccelerometer()
+uint8_t initAccelerometer()
 {
   uint8_t temp;
   uint8_t status = i2c_io(0x31, FIFO_CTRL, 1, &temp, 1, NULL, 0);
@@ -47,14 +53,14 @@ unit8_t initAccelerometer()
   uint8_t status |= i2c_io(0x31, FIFO_CTRL, 1, &temp, 1, NULL, 0);
 }
 
-unit8_t pollAccelerometer()
+uint8_t pollAccelerometer()
 {
 
   uint8_t status = readAccelerometer(output_temp);
   push_back_FIFO(output_temp, XYZ_BUFFER, XYZ_BUFFER_SIZE, WP);
   return status;
 }
-unit8_t readAccelerometer(float output[3])
+uint8_t readAccelerometer(float output[3])
 {
 
   //no need to poll to see if data is ready since it will refresh at
@@ -81,7 +87,7 @@ unit8_t readAccelerometer(float output[3])
 
 }
 
-void push_back_FIFO(float* val, float** buffer, unit8_t BUFFER_SIZE, unit8_t& current_loc)
+void push_back_FIFO(float* val, float** buffer, uint8_t BUFFER_SIZE, uint8_t& current_loc)
 {
 
   buffer[(current_loc % BUFFER_SIZE)][0] = val[0];
