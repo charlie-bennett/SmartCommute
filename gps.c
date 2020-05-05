@@ -73,7 +73,7 @@ void pollGPS(char temp_input)
 	return;
 }
 
-const char* popGPS()
+char* popGPS()
 {
 	if (FIFO_SIZE == 0) return NULL;
 	return GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE--)) % GPS_BUFFER_SIZE];

@@ -9,14 +9,14 @@ uint8_t LS_BUFFER[LS_FIFO_SIZE];
 uint8_t i = 0;
 float runsum;
 
-unit8_t poll_light_sensor()
+uint8_t poll_light_sensor()
 {
   adc_init(0X01);
   rawvalue = adc_sample();
   push_back_LSFIFO(rawvalue, LS_BUFFER, LS_FIFO_SIZE, LS_WP);
 
 }
-void push_back_LSFIFO(uint8_t val, uint8_t buffer, unit8_t BUFFER_SIZE, unit8_t& current_loc)
+void push_back_LSFIFO(uint8_t val, uint8_t buffer, uint8_t BUFFER_SIZE, uint8_t& current_loc)
 {
 
   buffer[(current_loc % BUFFER_SIZE)] = val;
