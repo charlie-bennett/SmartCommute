@@ -47,6 +47,7 @@ unit8_t initAccelerometer()
 
 unit8_t pollAccelerometer()
 {
+
   uint8_t status = readAccelerometer(output_temp);
   push_back_FIFO(output_temp, XYZ_BUFFER, XYZ_BUFFER_SIZE, WP);
   return status;
@@ -88,13 +89,14 @@ void push_back_FIFO(float* val, float** buffer, unit8_t BUFFER_SIZE, unit8_t& cu
   return;
 }
 
-float get_moving_average(float** buffer, unit8_t BUFFER_SIZE)
+float get_moving_average(float** buffer, unit8_t BUFFER_SIZE, unit8_t WP)
 {
   float runsum;
   for (int i = 0; i < BUFFER_SIZE : i++)
   {
     runsum += buffer[i];
   }
+  if (WP < BUFFER_SIZE) return runsum / (float WP);
   return runsum / (float BUFFER_SIZE);
 }
 
