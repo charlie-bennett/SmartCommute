@@ -16,6 +16,9 @@ volatile uint8_t FIFO_SIZE;
 volatile char current_comp[6];
 volatile uint8_t invalid_flag;
 
+volatile int8_t buzzerflag = -1;
+volatile int8_t readingBluetooth = 0;
+
 
 
 uint8_t is_coordinates(char* input)
@@ -41,7 +44,6 @@ void gps_init()
 
 void pollGPS(char temp_input)
 {
-	temp_input = UDR0;
 	if (!invalid_flag) GPS_DATA_BUFFER[GPS_WP % GPS_BUFFER_SIZE][GPS_BUFF_LOC[GPS_WP]++] = temp_input;
 	if (GPS_BUFF_LOC[GPS_WP % GPS_BUFFER_SIZE] == 6)
 	{
@@ -77,4 +79,22 @@ char* popGPS()
 	return GPS_DATA_BUFFER[(GPS_WP + GPS_BUFFER_SIZE - (FIFO_SIZE--)) % GPS_BUFFER_SIZE];
 }
 
+
+ISR(USART_RX_vect)
+{
+	char c = UDR0;
+
+	if(readingBluetooth == 0)
+    {
+        if(c == "D")
+        {
+            buzzerflag = 0;
+        }
+    }
+
+    else
+    {
+    	pollGPS(c);
+    }
+}
 
