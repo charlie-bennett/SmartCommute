@@ -10,6 +10,8 @@
 static char prefix[6] = "$GPRMC";
 uint8_t i2 = 0;
 char temp_input;
+int8_t istream_size = -1;
+speedFlag = 1;
 
 volatile char GPS_DATA_BUFFER [GPS_BUFFER_SIZE][GPS_LENGTH];
 volatile uint8_t GPS_BUFF_LOC[GPS_BUFFER_SIZE];
@@ -89,6 +91,19 @@ ISR(USART_RX_vect)
         if(c == 'D')
         {
             buzzerflag = 0;
+        }
+        if(c == 'S')
+        {
+        	istream_size++;
+        }
+        if(istream_size >= 0)
+        {
+        	lcdSpeed[istream_size++] = c;
+        }
+        if(istream_size >= 4)
+        {
+        	speedFlag = 0;
+        	istream_size = -1;
         }
     }
 

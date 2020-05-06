@@ -28,7 +28,10 @@ volatile uint8_t poll_light = 1;
 
 
 volatile unsigned char input;
-volatile char* message;
+volatile char message[32];
+char printlcd[33];
+char lcdTemp[4];
+char lcdBPM[4];
 char cfloat[10];
 
 volatile uint8_t millisecondsElapsed = 0;
@@ -48,6 +51,22 @@ float AC_mavg[3];
 
 //LCD (half duplex) , BLUETOOTH, GPS (half duplex)
 
+void clearLCD()
+{
+	while (( UCSR0A & (1 << UDRE0 )) == 0);
+	UDR0 = 0x01;
+}
+
+void alarmLCD()
+{
+	clearLCD();
+	sprintf(printlcd, "ALARM ON, HOLD VOL UP TO CANCEL");
+	uint8_t i = 0;
+	while (printlcd[i] != '\0')
+	{
+		serial_out(printlcd[i++]);
+	}
+}
 
 void serial_wait()
 {
@@ -59,10 +78,14 @@ void sendLCD()
 {
 	//set port D to mux 0
 	PORTD &= !(1 << 4);
+	//clear the screen
+	clearLCD();
+	//format new message
+	sprintf(printlcd, "Temp:%s BPM:%sSpeed:%s", lcdTemp, lcdBPM, lcdSpeed)
 	uint8_t i = 0;
-	while (message[i] != '\0')
+	while (printlcd[i] != '\0')
 	{
-		serial_out(message[i++]);
+		serial_out(printlcd[i++]);
 	}
 
 }
@@ -178,6 +201,7 @@ int main(void)
 			//send data to LCD, bluetooth module
 			serial_wait();
 			sprintf(message, "H,%d", bpm * 6);
+			sprintf(lcdBPM, "%d", bpm);
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
@@ -222,7 +246,7 @@ int main(void)
 			PORTC |= (1 << 3);
 			serial_wait();
 			message = "ALARM ON";
-			sendLCD();
+			alarmLCD();
 		}
 
 		if(buzzerflag == 1)
@@ -248,20 +272,21 @@ int main(void)
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
-			sendLCD();
-			serial_wait();
 			dtostrf( AC_mavg[1], 3, 4, cfloat );
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
-			sendLCD();
-			serial_wait();
 			dtostrf( AC_mavg[2], 3, 4, cfloat );
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
+			findspeed = 1;
+		}
+
+		if(speedFlag == 0) 
+		{
 			serial_wait();
 			sendLCD();
-			findspeed = 1;
+			speedFlag = 1;
 		}
 
 		if (poll_light == 0)
@@ -278,8 +303,7 @@ int main(void)
 			dtostrf( LS_mavg, 3, 4, cfloat );
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
-			serial_wait();
-			sendLCD();
+
 			sendlight = 1;
 		}
 
@@ -293,7 +317,9 @@ int main(void)
 				{
 					//do something
 					serial_wait();
-					sprintf(message, "T,%d", rawvalue);
+					dtostrf( rawvalue, 3, 0, cfloat );
+					sprintf(message, "T,%s", cfloat);
+					sprintf(lcdTemp, "%s", cfloat);
 					sendBluetooth();
 					serial_wait();
 					sendLCD();
@@ -305,7 +331,9 @@ int main(void)
 				{
 					//do something
 					serial_wait();
-					sprintf(message, "T,%d", rawvalue);
+					dtostrf( rawvalue, 3, 0, cfloat );
+					sprintf(message, "T,%d", cfloat);
+					sprintf(lcdTemp, "%s", cfloat);
 					sendBluetooth();
 					serial_wait();
 					sendLCD();
