@@ -81,7 +81,7 @@ void sendLCD()
 	//clear the screen
 	clearLCD();
 	//format new message
-	sprintf(printlcd, "Temp:%s BPM:%sSpeed:%s", lcdTemp, lcdBPM, lcdSpeed)
+	sprintf(printlcd, "Temp:%s BPM:%sSpeed:%s", lcdTemp, lcdBPM, lcdSpeed);
 	uint8_t i = 0;
 	while (printlcd[i] != '\0')
 	{
@@ -167,7 +167,7 @@ int main(void)
 		{
 			//send data through bluetooth module
 			serial_wait();
-			message = "M,4";
+			sprintf(message,"M,4");
 			sendBluetooth();
 			vol_up = 1;
 		}
@@ -175,7 +175,7 @@ int main(void)
 		{
 			//send data through bluetooth module
 			serial_wait();
-			message = "M,1";
+			sprintf(message,"M,1");
 			sendBluetooth();
 			vol_down = 1;
 		}
@@ -183,7 +183,7 @@ int main(void)
 		{
 			//send data through bluetooth module
 			serial_wait();
-			message = "M,2";
+			sprintf(message,"M,2");
 			sendBluetooth();
 			skip = 1;
 		}
@@ -191,7 +191,7 @@ int main(void)
 		if (pause == 0)
 		{
 			serial_wait();
-			message = "M,3";
+			sprintf(message,"M,3");
 			sendBluetooth();
 			pause = 1;
 		}
@@ -216,7 +216,7 @@ int main(void)
 		{
 			serial_wait();
 			// Z is for start/stop transmission
-			message = "Z,";
+			sprintf(message,"Z,");
 			sendBluetooth();
 			serial_wait();
 			readingBluetooth = 1;
@@ -228,7 +228,7 @@ int main(void)
 			serial_wait();
 			sendBluetooth();
 			serial_wait();
-			message = "G,";
+			sprintf(message,"G,");
 			uint8_t mindex = 2;
 			uint8_t i;
 			for(i = 20; i < 44; i++)
@@ -245,14 +245,13 @@ int main(void)
 			//turn on buzzer
 			PORTC |= (1 << 3);
 			serial_wait();
-			message = "ALARM ON";
 			alarmLCD();
 		}
 
 		if(buzzerflag == 1)
 		{
 			serial_wait();
-			message = "OK,";
+			sprintf(message,"OK,");
 			sendBluetooth();
 			buzzerflag = -1;
 		}
@@ -332,7 +331,7 @@ int main(void)
 					//do something
 					serial_wait();
 					dtostrf( rawvalue, 3, 0, cfloat );
-					sprintf(message, "T,%d", cfloat);
+					sprintf(message, "T,%s", cfloat);
 					sprintf(lcdTemp, "%s", cfloat);
 					sendBluetooth();
 					serial_wait();

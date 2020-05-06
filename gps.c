@@ -11,7 +11,6 @@ static char prefix[6] = "$GPRMC";
 uint8_t i2 = 0;
 char temp_input;
 int8_t istream_size = -1;
-speedFlag = 1;
 
 volatile char GPS_DATA_BUFFER [GPS_BUFFER_SIZE][GPS_LENGTH];
 volatile uint8_t GPS_BUFF_LOC[GPS_BUFFER_SIZE];
