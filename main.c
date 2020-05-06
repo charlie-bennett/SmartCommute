@@ -29,6 +29,7 @@ volatile uint8_t poll_light = 1;
 
 volatile unsigned char input;
 volatile char* message;
+char cfloat[10];
 
 volatile uint8_t millisecondsElapsed = 0;
 volatile uint8_t secondsElapsed = 0;
@@ -224,17 +225,20 @@ int main(void)
 		{
 			get_accelerometer_moving_average(AC_mavg);
 			serial_wait();
-			sprintf(message, "i,%f", AC_mavg[0]); //TODO Andrew
+			dtostrf( cfloat, 3, 4, AC_mavg[0] );
+			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
 			serial_wait();
-			sprintf(message, "j,%f", AC_mavg[1]); //TODO Andrew
+			dtostrf( cfloat, 3, 4, AC_mavg[1] );
+			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
 			serial_wait();
-			sprintf(message, "k,%f", AC_mavg[2]); //TODO Andrew
+			dtostrf( cfloat, 3, 4, AC_mavg[2] );
+			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
@@ -251,7 +255,8 @@ int main(void)
 
 			LS_mavg = get_light_sensor_moving_average();
 			serial_wait();
-			sprintf(message, "L,%f", LS_mavg);
+			dtostrf( cfloat, 3, 4, LS_mavg );
+			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
