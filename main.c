@@ -218,10 +218,10 @@ int main(void)
 		if (pollSpeed == 0)
 		{
 			pollAccelerometer();
-			findspeed = 1;
+			pollSpeed = 1;
 		}
 
-		if (findspeed)
+		if (findspeed == 0)
 		{
 			get_accelerometer_moving_average(AC_mavg);
 			serial_wait();
@@ -242,6 +242,7 @@ int main(void)
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
+			findspeed = 1;
 		}
 
 		if (poll_light == 0)
