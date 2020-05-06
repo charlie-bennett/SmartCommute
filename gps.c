@@ -23,6 +23,7 @@ volatile uint8_t invalid_flag;
 volatile int8_t buzzerflag = -1;
 volatile int8_t readingBluetooth = 0;
 volatile int8_t speedFlag = 1;
+volatile char lcdSpeed[6];
 
 
 
