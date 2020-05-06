@@ -225,19 +225,19 @@ int main(void)
 		{
 			get_accelerometer_moving_average(AC_mavg);
 			serial_wait();
-			dtostrf( cfloat, 3, 4, AC_mavg[0] );
+			dtostrf( AC_mavg[0], 3, 4, cfloat);
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
 			serial_wait();
-			dtostrf( cfloat, 3, 4, AC_mavg[1] );
+			dtostrf( AC_mavg[1], 3, 4, cfloat );
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
 			sendLCD();
 			serial_wait();
-			dtostrf( cfloat, 3, 4, AC_mavg[2] );
+			dtostrf( AC_mavg[2], 3, 4, cfloat );
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
@@ -255,7 +255,7 @@ int main(void)
 
 			LS_mavg = get_light_sensor_moving_average();
 			serial_wait();
-			dtostrf( cfloat, 3, 4, LS_mavg );
+			dtostrf( LS_mavg, 3, 4, cfloat );
 			sprintf(message, "i,%s", cfloat); //TODO Andrew
 			sendBluetooth();
 			serial_wait();
