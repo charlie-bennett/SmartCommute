@@ -70,7 +70,7 @@ void sendLCD()
 void sendBluetooth()
 {
 	//set port D to mux 1
-	PORTD |= !(1 << 4);
+	PORTD |= (1 << 4);
 	uint8_t i = 0;
 	while (message[i] != '\0')
 	{
