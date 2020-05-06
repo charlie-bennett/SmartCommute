@@ -109,13 +109,32 @@ double zaxis = 0;
 
 int main(void)
 {
+	/*PLEASE NOTE ASSUMPTIONS HERE
+	assumed to have already happened in previous setup run (UNTESTED BECAUSE OF CIRCUMSTANCE)
+	//setting baud rate of bluetooth to 9600
+
+	//1. set serial baud rate to 115200 - original baud rate of the bluetooth module
+	serial_init(3);
+	//2. enter command mode
+	serial_out('$');
+	serial_out('$');
+	serial_out('$');
+	//3. change the GPIO7 (affects baudrate to 9600) pin to always on at startup, now bluetooth will function at 9600 baud rate
+	message = "S%, 8080"
+	sendBluetooth();
+	serial_wait();
+	message = "S^8080"
+	sendBluetooth();
+	//4. return to 9600 baudrate (if necessary)
+	serial_init(47);
+	*/
 
 	HEARTBEAT_STATE = 0;
 	sei();
 	initAccelerometer();
 	setup();
 	i2c_init ( BDIV );
-	serial_init(3);
+	serial_init(47);
 	gps_init();
 
 	while (1)
