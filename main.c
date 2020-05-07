@@ -107,9 +107,10 @@ void setup()
 	TCCR1B |= (1 << WGM12);
 	// Enable Timer Interrupt
 	TIMSK1 |= (1 << OCIE1A);
-	// with a factor of 8 and timer count up to 62, emulates a millisecond timer
-	OCR1A = 62;
+	// with a factor of 1024 and timer count up to 62, emulates a millisecond timer
+	OCR1A = 15;
 	TCCR1B |= (1 << CS12);
+	TCCR1B |= (1 << CS10);
 
 	//all ports B are inputs
 	DDRB |= 0x00;
@@ -117,7 +118,7 @@ void setup()
 
 	TCCR0A |= (1 << WGM01);
 	TIMSK0 |= (1 << OCIE0A);
-	OCR0A = 62500;
+	OCR0A = 15625;
 
 	DDRC |= 0x04;
 }
