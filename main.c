@@ -220,11 +220,15 @@ int main(void)
 			sendBluetooth();
 			serial_wait();
 			readingBluetooth = 1;
+			//set mux to recieve from GPS
+			PORTD |= (1 << 3);
 			char* location = popGPS();
 			while(location == NULL) {
 				location = popGPS();
 			}
 			readingBluetooth = 0;
+			//reset mux to recieve from bluetooth
+			PORTD &= !(1 << 3);
 			serial_wait();
 			sendBluetooth();
 			serial_wait();
