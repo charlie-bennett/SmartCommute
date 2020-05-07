@@ -316,7 +316,7 @@ int main(void)
 			uint8_t rawvalue = adc_sample();
 			if (rawvalue > lastTemp)
 			{
-				if (rawvalue - lastTemp >= 3)
+				if (rawvalue - lastTemp >= 2)
 				{
 					//do something
 					serial_wait();
@@ -330,7 +330,7 @@ int main(void)
 			}
 			else
 			{
-				if (lastTemp - rawvalue >= 3)
+				if (lastTemp - rawvalue >= 2)
 				{
 					//do something
 					serial_wait();
