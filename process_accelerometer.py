@@ -1,12 +1,29 @@
 import datetime
 import numpy as np
 
-#TODO find 0 points
+#read from thread function
 
-def parse_data(input_dict):
-
-    for key, value in input_dict.items():
-        line = value.split(',')
+def process_data(my_thread):
+    session = SkiSession(0, 0, 0, datatime.datetime.now())
+    while(len(my_thread.in_data)>0): 
+        data = my_thread.read_data_in()
+        data = data.split(",")
+        outputs = []
+        tail = data[0]
+        for entry in data[1:]: 
+            if (delims.find(tail) != -1): 
+                outputs.append(float(entry))
+            tail = entry
+        temp = session.add_gx_entry(outputs[0], outputs[1], outputs[2] , datetime.datetime.now())
+    for (entry in session.get_speed()): 
+        my_thread.write_data_out(my_thread.speed_format_str + string(entry))
+    
+                
+                
+     #only process accelerometer 
+    
+    
+        
 
 
 
