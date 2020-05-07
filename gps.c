@@ -93,14 +93,17 @@ ISR(USART_RX_vect)
         {
             buzzerflag = 0;
         }
+        //acknowledge S, but don't capture it
         if(c == 'S')
         {
         	istream_size++;
         }
+        //capture speed reading, agreed upon size of 4 digits + decimal point if neccessary
         if(istream_size >= 0)
         {
         	lcdSpeed[istream_size++] = c;
         }
+        //transmit complete, reset size variable
         if(istream_size >= 4)
         {
         	speedFlag = 0;
@@ -111,6 +114,7 @@ ISR(USART_RX_vect)
     else
     {
     	pollGPS(c);
+    	istream_size = -1;
     }
 }
 
