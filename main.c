@@ -351,12 +351,12 @@ int main(void)
 		//read heartbeatsensor (heartbeat detected)
 		adc_init(0x03);
 		uint8_t rawvalue = adc_sample();
-		if (HEARTBEAT_STATE && rawvalue < threshold)
+		if (HEARTBEAT_STATE && rawvalue >= threshold)
 		{
 			bpm++;
 			HEARTBEAT_STATE = 0;
 		}
-		else if (!HEARTBEAT_STATE && rawvalue > threshold) HEARTBEAT_STATE = 1;
+		else if (!HEARTBEAT_STATE && rawvalue < threshold) HEARTBEAT_STATE = 1;
 
 	}
 
