@@ -190,10 +190,10 @@ class raw_data:
         unit_vector = [0]*3
         unit_vector[0] = (pre_unit_vector[0]*np.cos(theta_r)) + (pre_unit_vector[2]*np.sin(theta_r))
         unit_vector[1] = (pre_unit_vector[2]*np.cos(theta_r)) - (pre_unit_vector[0]*np.sin(theta_r))
-        unit_vector[1] = (pre_unit_vector[1] * np.cos(omega_r)) - (np.cos(omega_r) * unit_vector[0])
+        unit_vector[1] = (pre_unit_vector[1] * np.cos(omega_r)) - (np.sin(omega_r) * unit_vector[0])
         unit_vector[2] = (pre_unit_vector[2]*np.cos(theta_r)) - (pre_unit_vector[0]*np.sin(theta_r))
         unit_vector[2] = (unit_vector[2] * np.cos(omega_r)) + (np.cos(omega_r) * unit_vector[1])
-        unit_vector[2] = unit_vector[2] - 1 # subtract gravity
+        unit_vector[2] = unit_vector[2] - 1*(cos # subtract gravity
         self.regular_vector = unit_vector
         self.update_unit_vector()
         self.adjusted_for_gravity = 1
